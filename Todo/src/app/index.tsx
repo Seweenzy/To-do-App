@@ -1,98 +1,102 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Tasks from "@/components/tasks";
+import {
+  Text,
+  StyleSheet,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useState } from "react";
+const Index = () => {
+  const [task, setTask] = useState("");
+  const [taskItems, setTaskItems] = useState<string[]>([]);
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+  const handleAddTask = () => {
+    if (task.trim() === "") return;
+    setTaskItems([...taskItems, task.trim()]);
+    setTask("");
+  };
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+  const completeTask = (index: number) => {
+    const itemsCopy = [...taskItems];
+    itemsCopy.splice(index, 1);
+    setTaskItems(itemsCopy);
+  };
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
+    <SafeAreaView style={Styles.container}>
+      <Text>Hello, Welcome to my TO-DO App</Text>
+
+      <View style={Styles.header}>
+        <Text style={Styles.headertext}>Today's Tasks</Text>
+      </View>
+
+      <View>
+        {taskItems.map((item, index) => (
+          <TouchableOpacity key={index} onPress={() => completeTask(index)}>
+            <Tasks label={item} />
+          </TouchableOpacity>
+        ))}
+        {/* <Tasks label={"Hello world"} />*/}
+      </View>
+
+      <View
+        style={{
+          flexDirection: "row",
+          position: "absolute",
+          bottom: 60,
+          justifyContent: "space-around",
+          alignItems: "center",
+          width: "100%",
+          marginHorizontal: 20,
+        }}
+      >
+        <TextInput
+          onChangeText={(text) => setTask(text)}
+          value={task}
+          placeholder="Write a task"
+          style={{
+            width: 300,
+            borderColor: "lightgrey",
+            borderWidth: 2,
+            borderRadius: 20,
+            height: 50,
+            padding: 12,
+            backgroundColor: "white",
+          }}
+        />
+
+        <Pressable
+          onPress={handleAddTask}
+          style={({ pressed }) => ({
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+            alignItems: "center",
+            justifyContent: "center",
+            marginLeft: 20,
+            backgroundColor: pressed ? "lightblue" : "white",
+          })}
+        >
+          <Text style={{ fontSize: 25 }}>+</Text>
+        </Pressable>
+      </View>
+    </SafeAreaView>
   );
-}
+};
+export default Index;
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
-  );
-}
-
-const styles = StyleSheet.create({
+const Styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    padding: 20,
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+  header: {
+    marginTop: 30,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  headertext: {
+    fontWeight: "bold",
+    fontSize: 25,
   },
 });
