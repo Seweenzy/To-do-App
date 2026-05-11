@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 const Index = () => {
@@ -38,7 +39,7 @@ const Index = () => {
             <Tasks label={item} />
           </TouchableOpacity>
         ))}
-        {/* <Tasks label={"Hello world"} />*/}
+        {/*<Tasks label={"Hello world"} />*/}
       </View>
 
       <View
@@ -53,8 +54,8 @@ const Index = () => {
         }}
       >
         <TextInput
-          onChangeText={(text) => setTask(text)}
           value={task}
+          onChangeText={(text) => setTask(text)}
           placeholder="Write a task"
           style={{
             width: 300,
@@ -68,7 +69,7 @@ const Index = () => {
         />
 
         <Pressable
-          onPress={handleAddTask}
+          onPress={() => handleAddTask()}
           style={({ pressed }) => ({
             width: 60,
             height: 60,

@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { TextInput, View, Text } from "react-native";
 
-const Tasks = ({ label }) => {
+type TasksProps = {
+  label: string;
+};
+const Tasks = ({ label }: TasksProps) => {
   return (
     <View style={{ paddingTop: 20 }}>
       <View
